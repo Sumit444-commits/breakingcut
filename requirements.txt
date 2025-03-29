@@ -14,3 +14,4 @@ SpeechRecognition==3.14.1
 streamlit==1.43.2
 torch==2.0.1
 transformers==4.36.0
+google-generativeai
