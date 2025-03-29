@@ -140,6 +140,7 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
+
 def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white", bg_opacity=150):
     subtitle_clips = []
     video_width, video_height = videosize
@@ -159,31 +160,39 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white",
     use_default_font = not font_path
 
     def get_text_image(text):
-        """Creates and returns an image with the given text, wrapped properly."""
-        img_width = int(video_width * 0.8)
-        max_lines = 3  # ✅ Prevents too many lines
-        line_height = fontsize + 5
-        wrapped_text = textwrap.fill(text, width=img_width // (fontsize // 2))  # Wrap text
-        lines = wrapped_text.split("\n")[:max_lines]
-
-        img_height = line_height * len(lines) + 20  # Adjust height based on lines
-        img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
-        draw = ImageDraw.Draw(img)
+        """Creates and returns an image with properly wrapped text."""
+        img_width = int(video_width * 0.75)  # ✅ Ensures text is not too wide
+        padding = 15  # ✅ Extra padding around text
+        max_lines = 3  
+        line_spacing = 5  # ✅ Adds spacing between lines
 
         # ✅ Load font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
 
-        # ✅ Draw a semi-transparent background
+        # ✅ Wrap text properly
+        wrap_width = img_width // (fontsize // 2)
+        wrapped_text = textwrap.fill(text, width=wrap_width)
+        lines = wrapped_text.split("\n")[:max_lines]
+
+        # ✅ Calculate proper height for text
+        line_heights = [font.getbbox(line)[3] for line in lines]
+        img_height = sum(line_heights) + (line_spacing * (len(lines) - 1)) + (padding * 2)
+
+        # ✅ Create image with proper size
+        img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+
+        # ✅ Add a semi-transparent background
         bg_color = (0, 0, 0, bg_opacity)
         draw.rectangle([(0, 0), (img_width, img_height)], fill=bg_color)
 
-        # ✅ Center each line
-        y_offset = 10
+        # ✅ Draw text centered
+        y_offset = padding
         for line in lines:
-            text_width, text_height = draw.textbbox((0, 0), line, font=font)[2:]
+            text_width = draw.textbbox((0, 0), line, font=font)[2]
             text_x = (img_width - text_width) // 2
             draw.text((text_x, y_offset), line, font=font, fill=text_color)
-            y_offset += line_height
+            y_offset += font.getbbox(line)[3] + line_spacing  # Move to next line
 
         return img
 
@@ -196,7 +205,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white",
             img = get_text_image(subtitle.text)
             temp_path = os.path.join(subtitle_dir, f"subtitle_{hash(subtitle.text)}.png")
             img.save(temp_path, "PNG")
-            subtitle_cache[subtitle.text] = temp_path  # ✅ Cache the image path
+            subtitle_cache[subtitle.text] = temp_path  
 
         # ✅ Use cached subtitle image
         subtitle_clip = (
