@@ -58,8 +58,6 @@ audio_concat = r"Audio/concated_audio.wav"
 srtfilename = r"Text_files/subtitle.srt"
 mp4filename = r"Video/output_video_with_audio.mp4"
 
-subtitle_dir = r"Subtitle"
-
 
 
 # Ensure directory exists
@@ -68,7 +66,7 @@ os.makedirs(audio_path, exist_ok=True)
 os.makedirs(text_file_path, exist_ok=True)  
 os.makedirs(audio_path, exist_ok=True)  
 os.makedirs(video_dir, exist_ok=True)  
-os.makedirs(subtitle_dir, exist_ok=True)  
+
 # Functions
 
 # Function to delete old files
@@ -149,6 +147,10 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white")
     video_width, video_height = videosize
     subtitle_cache = {}  # ✅ Cache to store generated images
 
+    # ✅ Ensure subtitle directory exists
+    subtitle_dir = "Subtitle"
+    os.makedirs(subtitle_dir, exist_ok=True)
+
     # ✅ Locate a valid font path
     possible_fonts = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",  # Linux
@@ -157,44 +159,40 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white")
     ]
     
     font_path = next((fp for fp in possible_fonts if os.path.exists(fp)), None)
+    use_default_font = not font_path
 
-    if not font_path:
-        print("⚠️ No valid font file found! Using default PIL font.")
-        use_default_font = True
-    else:
-        use_default_font = False
+    def get_text_image(text):
+        """Creates and returns an image with the given text."""
+        img_width = int(video_width * 0.8)
+        img_height = fontsize * 3  
+        img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+
+        # ✅ Load font
+        font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
+
+        # ✅ Wrap text to fit image width
+        wrapped_text = textwrap.fill(text, width=img_width // (fontsize // 2))
+        text_bbox = draw.textbbox((0, 0), wrapped_text, font=font)
+        text_width, text_height = text_bbox[2], text_bbox[3]
+
+        text_x = (img_width - text_width) // 2
+        text_y = (img_height - text_height) // 2
+
+        draw.text((text_x, text_y), wrapped_text, font=font, fill=text_color)
+
+        return img
 
     for subtitle in subtitles:
         start_time = time_to_seconds(subtitle.start)
         end_time = time_to_seconds(subtitle.end)
         duration = end_time - start_time
 
-        # print(f"Subtitle: {subtitle.text} | Start: {start_time}s | End: {end_time}s | Duration: {duration}s")  # ✅ Debug Timing
-
-        # ✅ Avoid regenerating the same subtitle image
         if subtitle.text not in subtitle_cache:
-            img_width = int(video_width * 0.8)
-            img_height = fontsize * 2  
-            img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
-            draw = ImageDraw.Draw(img)
-
-            # ✅ Load font
-            if use_default_font:
-                font = ImageFont.load_default()
-            else:
-                font = ImageFont.truetype(font_path, fontsize)
-
-            text_width, text_height = draw.textbbox((0, 0), subtitle.text, font=font)[2:]
-            text_x = (img_width - text_width) // 2
-            text_y = (img_height - text_height) // 2
-
-            draw.text((text_x, text_y), subtitle.text, font=font, fill=text_color)
-
-            # ✅ Save image and cache
-            temp_path = f"Subtitle/subtitle_{hash(subtitle.text)}.png"
-            
+            img = get_text_image(subtitle.text)
+            temp_path = os.path.join(subtitle_dir, f"subtitle_{hash(subtitle.text)}.png")
             img.save(temp_path, "PNG")
-            subtitle_cache[subtitle.text] = temp_path  # Store in cache
+            subtitle_cache[subtitle.text] = temp_path  # ✅ Cache the image path
 
         # ✅ Use cached subtitle image
         subtitle_clip = (
@@ -207,7 +205,6 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white")
         subtitle_clips.append(subtitle_clip)
 
     return subtitle_clips
-
 
 # Retry function for image generation
 def generate_image_with_retry(content, max_retries=5, delay=2):
