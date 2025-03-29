@@ -3,6 +3,7 @@ numpy==2.2.4
 assemblyai==0.37.0
 datasets==3.4.0
 imageio==2.25.1
+moviepy
 moviepy==2.0.0.dev2
 nltk==3.9.1
 # opencv-python==4.5.3.56
