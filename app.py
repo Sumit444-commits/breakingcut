@@ -53,16 +53,19 @@ text_file_path = r"Text_files"
 audio_path = r"Audio/generated_audio/"
 # Output video file path
 video_path = r"Video/output_video.mp4"
+video_dir = r"Video"
 audio_concat = r"Audio/concated_audio.wav"
 # Define file paths
 srtfilename = r"Text_files/subtitle.srt"
 mp4filename = r"Video/output_video_with_audio.mp4"
+
 
 # Ensure directory exists
 os.makedirs(images_dir, exist_ok=True)  
 os.makedirs(audio_path, exist_ok=True)  
 os.makedirs(text_file_path, exist_ok=True)  
 os.makedirs(audio_path, exist_ok=True)  
+os.makedirs(video_dir, exist_ok=True)  
 
 # Functions
 
