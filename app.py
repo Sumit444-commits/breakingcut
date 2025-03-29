@@ -160,7 +160,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white",
 
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
-        img_width = int(video_width * 0.80)  # ✅ Adjusted width for better fitting
+        img_width = int(video_width * 0.70)  # ✅ Adjusted width for better fitting
         padding = 8  # ✅ Slightly reduced padding for better proportion
         line_spacing = 5  # ✅ Better spacing for readability
 
