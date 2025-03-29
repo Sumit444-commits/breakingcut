@@ -28,7 +28,7 @@ import time
 import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
-
+import textwrap
 from PIL import Image, ImageDraw, ImageFont
 from moviepy.video.VideoClip import ImageClip
 
@@ -150,6 +150,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white")
     # ✅ Ensure subtitle directory exists
     subtitle_dir = "Subtitle"
     os.makedirs(subtitle_dir, exist_ok=True)
+    delete_files_in_directory(subtitle_dir)
 
     # ✅ Locate a valid font path
     possible_fonts = [
