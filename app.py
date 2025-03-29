@@ -29,7 +29,7 @@ import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
 
-os.environ["IMAGEMAGICK_BINARY"] = "/path/to/convert"
+
 
 # Api setups
 
@@ -103,7 +103,7 @@ def time_to_seconds(time_obj):
     )
 
 # Create Subtitle Clips with Improved Styling
-def create_subtitle_clips(subtitles, videosize, fontsize=40, font="DejaVu-Sans", text_color="white", outline_color="white", outline_width=2):
+def create_subtitle_clips(subtitles, videosize, fontsize=40, font="serif", text_color="white", outline_color="white", outline_width=2):
     subtitle_clips = []
     video_width, video_height = videosize
 
