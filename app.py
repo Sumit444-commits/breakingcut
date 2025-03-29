@@ -28,10 +28,6 @@ import time
 import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
-from moviepy.config import change_settings
-
-# Force MoviePy to use FFMPEG instead of ImageMagick
-change_settings({"IMAGEMAGICK_BINARY": "unset"})
 
 # Api setups
 
