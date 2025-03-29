@@ -140,7 +140,7 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
-def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white", outline_color="black", bg_opacity=80):
+def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white", outline_color="black", bg_opacity=0):
     subtitle_clips = []
     video_width, video_height = videosize
     subtitle_cache = {}
@@ -161,8 +161,8 @@ def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white",
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
         img_width = int(video_width * 0.75)  # ✅ Adjusted width for better fitting
-        padding = 12  # ✅ Slightly reduced padding for better proportion
-        line_spacing = 8  # ✅ Better spacing for readability
+        padding = 8  # ✅ Slightly reduced padding for better proportion
+        line_spacing = 5  # ✅ Better spacing for readability
 
         # ✅ Load bold font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
@@ -216,7 +216,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white",
         # ✅ Adjusted position for better placement
         subtitle_clip = (
             ImageClip(subtitle_cache[subtitle.text], ismask=False)
-            .set_position(("center", video_height * 0.78))  # ✅ Moved up for a balanced look
+            .set_position(("center", video_height * 0.75))  # ✅ Moved up for a balanced look
             .set_start(start_time)
             .set_duration(duration)
         )
