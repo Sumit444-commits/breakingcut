@@ -28,7 +28,6 @@ import time
 import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
-os.system("pip install moviepy")
 from moviepy.config import change_settings
 
 change_settings({"IMAGEMAGICK_BINARY": "/usr/bin/convert"})
