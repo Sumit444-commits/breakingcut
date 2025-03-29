@@ -291,7 +291,7 @@ if __name__ == "__main__":
             story_file.write(st.session_state.response_text)
             story_file.close()
     # Read the stored response text
-    with open(os.path.join(text_file_path,"story.txt"), "r" , encoding="utf-8") as file:
+    with open(os.path.join(text_file_path,"story.txt"), "r" ) as file:
         story_text = file.read()
         file.close()
         
