@@ -140,8 +140,7 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
-
-def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white", outline_color="black", bg_opacity=100):
+def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white", outline_color="black", bg_opacity=80):
     subtitle_clips = []
     video_width, video_height = videosize
     subtitle_cache = {}
@@ -150,7 +149,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
     subtitle_dir = "Subtitle"
     os.makedirs(subtitle_dir, exist_ok=True)
 
-    # ✅ Locate a bold font for better readability
+    # ✅ Locate a readable bold font
     possible_fonts = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",  # Linux
         "C:/Windows/Fonts/Arial-Bold.ttf",  # Windows
@@ -161,9 +160,9 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
 
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
-        img_width = int(video_width * 0.85)  # ✅ Ensures text is large but fits
-        padding = 20  # ✅ Extra padding for better spacing
-        line_spacing = 10  # ✅ Adds space between lines
+        img_width = int(video_width * 0.80)  # ✅ Ensures text fits properly
+        padding = 15  # ✅ Reducing padding for better proportion
+        line_spacing = 8  # ✅ Adjust spacing for a natural look
 
         # ✅ Load bold font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
@@ -173,7 +172,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
         wrapped_text = textwrap.fill(text, width=wrap_width)
         lines = wrapped_text.split("\n")
 
-        # ✅ Calculate text height correctly
+        # ✅ Calculate text height properly
         text_height = sum([font.getbbox(line)[3] for line in lines]) + (line_spacing * (len(lines) - 1))
         img_height = text_height + (padding * 2)
 
@@ -181,23 +180,23 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
         img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
-        # ✅ Add a semi-transparent background
+        # ✅ Softer semi-transparent background
         bg_color = (0, 0, 0, bg_opacity)
         draw.rectangle([(0, 0), (img_width, img_height)], fill=bg_color)
 
-        # ✅ Draw outlined text
+        # ✅ Draw outlined text (soft shadow effect)
         y_offset = padding
-        outline_range = [-2, -1, 0, 1, 2]  # ✅ Creates a strong outline effect
+        outline_range = [-1, 1]  # ✅ Softer outline
         for line in lines:
             text_width = draw.textbbox((0, 0), line, font=font)[2]
             text_x = (img_width - text_width) // 2
             
-            # Draw outline
+            # ✅ Draw shadow for better visibility
             for dx in outline_range:
                 for dy in outline_range:
                     draw.text((text_x + dx, y_offset + dy), line, font=font, fill=outline_color)
             
-            # Draw main text
+            # ✅ Draw main text
             draw.text((text_x, y_offset), line, font=font, fill=text_color)
             y_offset += font.getbbox(line)[3] + line_spacing  
 
@@ -214,10 +213,10 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
             img.save(temp_path, "PNG")
             subtitle_cache[subtitle.text] = temp_path  
 
-        # ✅ Position subtitles slightly higher
+        # ✅ Position subtitles lower for a cinematic feel
         subtitle_clip = (
             ImageClip(subtitle_cache[subtitle.text], ismask=False)
-            .set_position(("center", video_height * 0.80))
+            .set_position(("center", video_height * 0.87))
             .set_start(start_time)
             .set_duration(duration)
         )
@@ -225,6 +224,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=50, text_color="white",
         subtitle_clips.append(subtitle_clip)
 
     return subtitle_clips
+
 # Retry function for image generation
 def generate_image_with_retry(content, max_retries=5, delay=2):
     for attempt in range(max_retries):
