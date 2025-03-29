@@ -140,17 +140,14 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
-
-
-def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white"):
+def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white", bg_opacity=150):
     subtitle_clips = []
     video_width, video_height = videosize
-    subtitle_cache = {}  # ✅ Cache to store generated images
+    subtitle_cache = {}
 
     # ✅ Ensure subtitle directory exists
     subtitle_dir = "Subtitle"
     os.makedirs(subtitle_dir, exist_ok=True)
-    delete_files_in_directory(subtitle_dir)
 
     # ✅ Locate a valid font path
     possible_fonts = [
@@ -158,29 +155,35 @@ def create_subtitle_clips(subtitles, videosize, fontsize=30, text_color="white")
         "C:/Windows/Fonts/Arial.ttf",  # Windows
         "/System/Library/Fonts/Supplemental/Arial.ttf"  # macOS
     ]
-    
     font_path = next((fp for fp in possible_fonts if os.path.exists(fp)), None)
     use_default_font = not font_path
 
     def get_text_image(text):
-        """Creates and returns an image with the given text."""
+        """Creates and returns an image with the given text, wrapped properly."""
         img_width = int(video_width * 0.8)
-        img_height = fontsize * 3  
+        max_lines = 3  # ✅ Prevents too many lines
+        line_height = fontsize + 5
+        wrapped_text = textwrap.fill(text, width=img_width // (fontsize // 2))  # Wrap text
+        lines = wrapped_text.split("\n")[:max_lines]
+
+        img_height = line_height * len(lines) + 20  # Adjust height based on lines
         img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
         # ✅ Load font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
 
-        # ✅ Wrap text to fit image width
-        wrapped_text = textwrap.fill(text, width=img_width // (fontsize // 2))
-        text_bbox = draw.textbbox((0, 0), wrapped_text, font=font)
-        text_width, text_height = text_bbox[2], text_bbox[3]
+        # ✅ Draw a semi-transparent background
+        bg_color = (0, 0, 0, bg_opacity)
+        draw.rectangle([(0, 0), (img_width, img_height)], fill=bg_color)
 
-        text_x = (img_width - text_width) // 2
-        text_y = (img_height - text_height) // 2
-
-        draw.text((text_x, text_y), wrapped_text, font=font, fill=text_color)
+        # ✅ Center each line
+        y_offset = 10
+        for line in lines:
+            text_width, text_height = draw.textbbox((0, 0), line, font=font)[2:]
+            text_x = (img_width - text_width) // 2
+            draw.text((text_x, y_offset), line, font=font, fill=text_color)
+            y_offset += line_height
 
         return img
 
