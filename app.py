@@ -1,10 +1,4 @@
-# import asyncio
-# import nest_asyncio
-# nest_asyncio.apply()
-
 import streamlit as st 
-# import google.generativeai as genai
-# from google.generativeai import types
 from google import genai
 from google.genai import types
 import speech_recognition as sr 
@@ -178,7 +172,7 @@ def load_css(file_name):
 
 
 if __name__ == "__main__":
-    st.set_page_config(page_title="AI Story Video Generator", layout="wide")
+    st.set_page_config(page_title="Breaking-/-Cut| AI Story Video Generator", layout="wide")
     # Custom Styled Logo
     # Display Logo Using HTML
     st.markdown('<h1 class="header">🔥 Breaking-/-Cut 🔥</h1>', unsafe_allow_html=True)
@@ -440,7 +434,7 @@ if __name__ == "__main__":
                 # concated audio to show and download
                 concate_audios(audios,audio_concat)
                 st.audio(audio_concat, format="audio/wav")  # Play audio in Streamlit
-                st.markdown(f'<a href="{filename}" download>Download {os.path.basename(audio_concat)}</a>', unsafe_allow_html=True)
+                st.markdown(f'<a href="{audio_concat}" download>Download {os.path.basename(audio_concat)}</a>', unsafe_allow_html=True)
 
             
                 
