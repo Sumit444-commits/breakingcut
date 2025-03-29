@@ -29,9 +29,9 @@ import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
 os.system("pip install moviepy")
+from moviepy.config import change_settings
 
-# Explicitly set ImageMagick binary path
-os.environ["IMAGEMAGICK_BINARY"] = "/usr/bin/convert"
+change_settings({"IMAGEMAGICK_BINARY": "/usr/bin/convert"})
 
 # Api setups
 
