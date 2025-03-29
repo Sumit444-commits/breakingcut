@@ -1,6 +1,1 @@
-libgl1-mesa-glx
-libglib2.0-0
-ffmpeg
-libopenblas-dev
-libatlas-base-dev
-libgl1-mesa-glx
+libgl1
