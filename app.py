@@ -140,7 +140,7 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
-def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white", outline_color="black", bg_opacity=0):
+def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white", outline_color="black", bg_opacity=80):
     subtitle_clips = []
     video_width, video_height = videosize
     subtitle_cache = {}
@@ -160,21 +160,21 @@ def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white",
 
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
-        img_width = int(video_width * 0.80)  # ✅ Ensures text fits properly
-        padding = 10  # ✅ Reducing padding for better proportion
-        line_spacing = 5  # ✅ Adjust spacing for a natural look
+        img_width = int(video_width * 0.75)  # ✅ Adjusted width for better fitting
+        padding = 12  # ✅ Slightly reduced padding for better proportion
+        line_spacing = 8  # ✅ Better spacing for readability
 
         # ✅ Load bold font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
 
-        # ✅ Wrap text properly
+        # ✅ Improved text wrapping logic
         wrap_width = img_width // (fontsize // 2)
         wrapped_text = textwrap.fill(text, width=wrap_width)
         lines = wrapped_text.split("\n")
 
         # ✅ Calculate text height properly
         text_height = sum([font.getbbox(line)[3] for line in lines]) + (line_spacing * (len(lines) - 1))
-        img_height = text_height + (padding)
+        img_height = text_height + (padding * 2)
 
         # ✅ Create transparent background image
         img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
@@ -184,14 +184,14 @@ def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white",
         bg_color = (0, 0, 0, bg_opacity)
         draw.rectangle([(0, 0), (img_width, img_height)], fill=bg_color)
 
-        # ✅ Draw outlined text (soft shadow effect)
+        # ✅ Draw outlined text for better contrast
         y_offset = padding
         outline_range = [-1, 1]  # ✅ Softer outline
         for line in lines:
             text_width = draw.textbbox((0, 0), line, font=font)[2]
             text_x = (img_width - text_width) // 2
             
-            # ✅ Draw shadow for better visibility
+            # ✅ Draw shadow/outline
             for dx in outline_range:
                 for dy in outline_range:
                     draw.text((text_x + dx, y_offset + dy), line, font=font, fill=outline_color)
@@ -213,10 +213,10 @@ def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white",
             img.save(temp_path, "PNG")
             subtitle_cache[subtitle.text] = temp_path  
 
-        # ✅ Position subtitles lower for a cinematic feel
+        # ✅ Adjusted position for better placement
         subtitle_clip = (
             ImageClip(subtitle_cache[subtitle.text], ismask=False)
-            .set_position(("center", video_height * 0.87))
+            .set_position(("center", video_height * 0.78))  # ✅ Moved up for a balanced look
             .set_start(start_time)
             .set_duration(duration)
         )
@@ -224,6 +224,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white",
         subtitle_clips.append(subtitle_clip)
 
     return subtitle_clips
+
 
 # Retry function for image generation
 def generate_image_with_retry(content, max_retries=5, delay=2):
