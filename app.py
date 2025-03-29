@@ -140,7 +140,7 @@ def time_to_seconds(time_obj):
 
 #     return subtitle_clips
 
-def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white", outline_color="black", bg_opacity=80):
+def create_subtitle_clips(subtitles, videosize, fontsize=42, text_color="white", outline_color="black", bg_opacity=0):
     subtitle_clips = []
     video_width, video_height = videosize
     subtitle_cache = {}
@@ -161,8 +161,8 @@ def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white",
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
         img_width = int(video_width * 0.80)  # ✅ Ensures text fits properly
-        padding = 15  # ✅ Reducing padding for better proportion
-        line_spacing = 8  # ✅ Adjust spacing for a natural look
+        padding = 10  # ✅ Reducing padding for better proportion
+        line_spacing = 5  # ✅ Adjust spacing for a natural look
 
         # ✅ Load bold font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
@@ -174,7 +174,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=45, text_color="white",
 
         # ✅ Calculate text height properly
         text_height = sum([font.getbbox(line)[3] for line in lines]) + (line_spacing * (len(lines) - 1))
-        img_height = text_height + (padding * 2)
+        img_height = text_height + (padding)
 
         # ✅ Create transparent background image
         img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
