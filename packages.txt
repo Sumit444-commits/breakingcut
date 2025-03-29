@@ -3,3 +3,12 @@ build-essential
 python3-dev
 libatlas-base-dev
 ffmpeg
+libx11-6
+libxext6
+libxrender1
+libxcursor1
+libxcomposite1
+libxdamage1
+libxfixes3
+libxi6
+libxrandr2
