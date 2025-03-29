@@ -3,10 +3,10 @@
 # nest_asyncio.apply()
 
 import streamlit as st 
-# import google.generativeai as genai
-# from google.generativeai import types
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+from google.generativeai import types
+# from google import genai
+# from google.genai import types
 import speech_recognition as sr 
 from transformers import SpeechT5Processor, SpeechT5ForTextToSpeech, SpeechT5HifiGan
 from datasets import load_dataset
