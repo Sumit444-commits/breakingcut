@@ -168,7 +168,7 @@ def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white",
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
 
         # ✅ Improved text wrapping logic
-        wrap_width = img_width // (fontsize // 1.8)
+        wrap_width = img_width // (fontsize // 1.5)
         wrapped_text = textwrap.fill(text, width=wrap_width)
         lines = wrapped_text.split("\n")
 
