@@ -8,7 +8,9 @@ import torch
 import soundfile as sf
 import os
 from io import BytesIO
-from PIL import Image
+import textwrap
+from PIL import Image, ImageDraw, ImageFont
+from moviepy.video.VideoClip import ImageClip
 # for image to video
 import cv2 as cv
 import imageio as iio
@@ -28,9 +30,6 @@ import time
 import nltk
 import re
 nltk.download("punkt")  # Ensure sentence tokenizer is available
-import textwrap
-from PIL import Image, ImageDraw, ImageFont
-from moviepy.video.VideoClip import ImageClip
 
 
 
@@ -107,39 +106,6 @@ def time_to_seconds(time_obj):
     )
 
 # Create Subtitle Clips with Improved Styling
-# def create_subtitle_clips(subtitles, videosize, fontsize=40, font="serif", text_color="white", outline_color="white", outline_width=2):
-#     subtitle_clips = []
-#     video_width, video_height = videosize
-
-#     for subtitle in subtitles:
-#         start_time = time_to_seconds(subtitle.start)
-#         end_time = time_to_seconds(subtitle.end)
-#         duration = end_time - start_time
-
-#         # Subtitle text styling
-#         text_clip = (
-#             TextClip(
-#                 subtitle.text,
-#                 fontsize=fontsize,
-#                 font=font,
-#                 color=text_color,
-#                 stroke_color=outline_color,  # Outline for better visibility
-#                 stroke_width=outline_width,  # Outline thickness
-#                 size=(video_width * 0.8, None),  # 80% width to avoid overflow
-#                 method="caption",
-#              )
-#             .set_start(start_time)
-#             .set_duration(duration)
-#         )
-
-#         # Positioning subtitles slightly above the bottom to avoid cutoff
-#         subtitle_x_position = "center"
-#         subtitle_y_position = video_height * 0.80  # 85% from the top (bottom)
-
-#         subtitle_clips.append(text_clip.set_position((subtitle_x_position, subtitle_y_position)))
-
-#     return subtitle_clips
-
 def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white", outline_color="black", bg_opacity=0):
     subtitle_clips = []
     video_width, video_height = videosize
