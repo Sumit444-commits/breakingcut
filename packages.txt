@@ -12,3 +12,4 @@ libxdamage1
 libxfixes3
 libxi6
 libxrandr2
+imagemagick
