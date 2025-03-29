@@ -4,7 +4,7 @@ imageio==2.25.1
 moviepy==2.0.0.dev2
 nltk==3.9.1
 numpy==1.26.0
-opencv-python==4.11.0.86
+opencv-python
 Pillow==11.1.0
 # protobuf==3.20.1
 pydub==0.25.1
