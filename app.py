@@ -111,11 +111,11 @@ def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white",
     video_width, video_height = videosize
     subtitle_cache = {}
 
-    # ✅ Ensure subtitle directory exists
+    #  Ensure subtitle directory exists
     subtitle_dir = "Subtitle"
     os.makedirs(subtitle_dir, exist_ok=True)
 
-    # ✅ Locate a readable bold font
+    #  Locate a readable bold font
     possible_fonts = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",  # Linux
         "C:/Windows/Fonts/Arial-Bold.ttf",  # Windows
@@ -126,43 +126,43 @@ def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white",
 
     def get_text_image(text):
         """Creates and returns an image with outlined text."""
-        img_width = int(video_width * 0.75)  # ✅ Adjusted width for better fitting
-        padding = 8  # ✅ Slightly reduced padding for better proportion
-        line_spacing = 5  # ✅ Better spacing for readability
+        img_width = int(video_width * 0.75)  #  Adjusted width for better fitting
+        padding = 8  #  Slightly reduced padding for better proportion
+        line_spacing = 5  #  Better spacing for readability
 
-        # ✅ Load bold font
+        #  Load bold font
         font = ImageFont.load_default() if use_default_font else ImageFont.truetype(font_path, fontsize)
 
-        # ✅ Improved text wrapping logic
+        #  Improved text wrapping logic
         wrap_width = img_width // (fontsize // 1.8)
         wrapped_text = textwrap.fill(text, width=wrap_width)
         lines = wrapped_text.split("\n")
 
-        # ✅ Calculate text height properly
+        #  Calculate text height properly
         text_height = sum([font.getbbox(line)[3] for line in lines]) + (line_spacing * (len(lines) - 1))
         img_height = text_height + (padding * 2)
 
-        # ✅ Create transparent background image
+        #  Create transparent background image
         img = Image.new("RGBA", (img_width, img_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
 
-        # ✅ Softer semi-transparent background
+        #  Softer semi-transparent background
         bg_color = (0, 0, 0, bg_opacity)
         draw.rectangle([(0, 0), (img_width, img_height)], fill=bg_color)
 
-        # ✅ Draw outlined text for better contrast
+        #  Draw outlined text for better contrast
         y_offset = padding
-        outline_range = [-1, 1]  # ✅ Softer outline
+        outline_range = [-1, 1]  #  Softer outline
         for line in lines:
             text_width = draw.textbbox((0, 0), line, font=font)[2]
             text_x = (img_width - text_width) // 2
             
-            # ✅ Draw shadow/outline
+            #  Draw shadow/outline
             for dx in outline_range:
                 for dy in outline_range:
                     draw.text((text_x + dx, y_offset + dy), line, font=font, fill=outline_color)
             
-            # ✅ Draw main text
+            #  Draw main text
             draw.text((text_x, y_offset), line, font=font, fill=text_color)
             y_offset += font.getbbox(line)[3] + line_spacing  
 
@@ -179,10 +179,10 @@ def create_subtitle_clips(subtitles, videosize, fontsize=40, text_color="white",
             img.save(temp_path, "PNG")
             subtitle_cache[subtitle.text] = temp_path  
 
-        # ✅ Adjusted position for better placement
+        #  Adjusted position for better placement
         subtitle_clip = (
             ImageClip(subtitle_cache[subtitle.text], ismask=False)
-            .set_position(("center", video_height * 0.75))  # ✅ Moved up for a balanced look
+            .set_position(("center", video_height * 0.75))  #  Moved up for a balanced look
             .set_start(start_time)
             .set_duration(duration)
         )
@@ -297,9 +297,9 @@ if __name__ == "__main__":
         - Ensure **all images & audio are properly generated** before creating the video.  
 
         **💡 Additional Tips:**  
-        ✅ Use **clear and structured** text for better AI results.  
-        ✅ Keep **background processes minimal** to avoid app slowdowns.  
-        ✅ If an error occurs multiple times, **try restarting the app**.  
+         Use **clear and structured** text for better AI results.  
+         Keep **background processes minimal** to avoid app slowdowns.  
+         If an error occurs multiple times, **try restarting the app**.  
         """)
 
    
@@ -581,7 +581,7 @@ if __name__ == "__main__":
                 transcript = transcriber.transcribe("Video/output_video_with_audio.mp4")
                 # Export subtitles to SRT format
                 subtitles = transcript.export_subtitles_srt()
-                st.write("Transcription Complete ✅")
+                st.write("Transcription Complete ")
                 # st.write(transcript.text)
 
                 # Save subtitles to file
@@ -605,7 +605,7 @@ if __name__ == "__main__":
                 # Save the final video
                 st.write("Rendering Video... This may take a while ⏳")
                 final_video.write_videofile(output_video_file, codec="libx264", fps=video.fps)
-                st.write("Video Processing Complete ✅")
+                st.write("Video Processing Complete ")
 
                 st.write("## Video with subtitles")
                 # Display video in Streamlit
